@@ -6,22 +6,27 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 
 import java.util.Random;
+import com.toedter.calendar.JDateChooser;
+
 
 public class Register extends JFrame implements ActionListener {
     JTextField nameTextField, fnameTextField, emailTextField, addressTextField, cityTextField, stateTextField, pincodeTextField;
-    // JDateChooser datechooser;
+    JDateChooser datechooser;
     JRadioButton male, female, others, single, married, nospecify;
     JButton next,back;
+    int random;
+    
     
     Register(){
         Random ran = new Random();
-        int random= Math.abs(ran.nextInt()%9000);
+        random= Math.abs(ran.nextInt()%9000);
 
         JLabel formno = new JLabel("APPLICATION FORM NO: "+ random);
         formno.setBounds(200,0, 500, 30);
@@ -55,9 +60,9 @@ public class Register extends JFrame implements ActionListener {
         dob.setBounds(100,160, 300, 30);
         dob.setFont(new Font("Raleway", Font.BOLD, 16));
         add(dob);
-        //  datechooser= new JDateChooser();
-        // datechooser.setBounds(300, 160, 400, 30);
-        // add(datechooser);
+        datechooser= new JDateChooser();
+        datechooser.setBounds(300, 160, 400, 30);
+        add(datechooser);
 
     
 
@@ -139,10 +144,10 @@ public class Register extends JFrame implements ActionListener {
         state.setBounds(100,400, 100, 30);
         state.setFont(new Font("Raleway", Font.BOLD, 16));
         add(state);
-        cityTextField = new JTextField();
-        cityTextField.setBounds( 300, 400, 400, 30);
-        cityTextField.setFont(new Font("Raleway", Font.PLAIN, 16));
-        add(cityTextField);
+        stateTextField = new JTextField();
+        stateTextField.setBounds( 300, 400, 400, 30);
+        stateTextField.setFont(new Font("Raleway", Font.PLAIN, 16));
+        add(stateTextField);
 
         JLabel pincode = new JLabel("PIN CODE: ");
         pincode.setBounds(100,440, 100, 30);
@@ -181,17 +186,69 @@ public class Register extends JFrame implements ActionListener {
         setVisible(true);
     }
     public void actionPerformed(ActionEvent ae){
+        
         if(ae.getSource()==back){
             setVisible(false);
             dispose();
             new Login();
         }
         else if (ae.getSource()==next){
+            String formno= ""+random;
+            String name= nameTextField.getText();
+            String fname= fnameTextField.getText();
+            String dob= ((JTextField)datechooser.getDateEditor().getUiComponent()).getText();
+            String gender = null;
+            if(male.isSelected()){
+                gender="Male";
+            }
+            else if (female.isSelected()){
+                gender="Female";
+            }
+            else if (others.isSelected()){
+                gender= "Others";
+            }
+            String email= emailTextField.getText();
+            String marital= null;
+            if (married.isSelected()){
+                marital="Married";
+            }
+            else if (single.isSelected()){
+                marital="Single";
+            }
+            else if (nospecify.isSelected()){
+                marital="no specify";
+            }
+
+            String address= addressTextField.getText();
+            String city= cityTextField.getText();
+            String state= stateTextField.getText();
+            String pincode= pincodeTextField.getText();
+
+            try{
+                if(name.equals("")){
+                    JOptionPane.showMessageDialog(null, "Name is Required");
+                }
+                else{
+                    Conn c= new Conn();
+                    String query= "insert into register values('"+formno+"','"+ name+"','"+fname+"','"+dob+"','"+gender+"','"+email+"','"+marital+"','"+address+"','"+city+"','"+pincode+"','"+state+"')";
+                    c.s.executeUpdate(query);
+                }
+
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }            
+            
+
+            
 
         }
+        }
 
-    }
+    
     public static void main(String[] args) {
         new Register();
     }
 }
+
+
