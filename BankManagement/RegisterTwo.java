@@ -199,6 +199,9 @@ public class RegisterTwo extends JFrame implements ActionListener {
                     Conn c= new Conn();
                     String query= "insert into registerTwo values('"+formno+"','"+ religion+"','"+category+"','"+income+"','"+qualification+"','"+occupation+"','"+citizenship+"','"+pan+"','"+passport+"','"+select+"')";
                     c.s.executeUpdate(query);
+                    setVisible(false);
+                    dispose();
+                    new RegisterThree(""+formno+"");
                 }
             }
             catch(Exception e){
