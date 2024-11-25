@@ -5,12 +5,17 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import com.mysql.cj.protocol.Resultset;
 
 public class Login extends JFrame implements ActionListener {
     JLabel label, title, cardno, pin;
@@ -94,7 +99,33 @@ public class Login extends JFrame implements ActionListener {
             cardTextField.setText("");
             pinPasswordField.setText("");
         } 
-        else if (ae.getSource() == login) {
+        
+            else if (ae.getSource() == login) {
+                try {
+                    Conn conn = new Conn();
+                    String cardnumber = cardTextField.getText().trim();
+                    String pinnumber = new String(pinPasswordField.getPassword()).trim();
+            
+                    String query = "SELECT * FROM loginvalues WHERE cardnumber = '"+cardnumber+"' AND pinnumber = '"+pinnumber+"'";
+                    
+                    // Print the query to debug
+                    System.out.println("Generated Query: " + query);
+            
+                    ResultSet rs = conn.s.executeQuery(query);
+            
+                    if (rs.next()) {
+                        System.out.println("Login Successful!");
+                        setVisible(false);
+                        new Transactions(pinnumber);
+                    } else {
+                        System.out.println("No match found in database.");
+                        JOptionPane.showMessageDialog(null, "Incorrect cardnumber or pin");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            
+            
 
         }
     }
