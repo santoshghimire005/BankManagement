@@ -97,6 +97,11 @@ public class Transactions extends JFrame implements ActionListener {
 
     }
     public void actionPerformed( ActionEvent ae){
+        if (ae.getSource()==deposit){
+            setVisible(false);
+            new Deposit(pinnumber);
+        }
+
 
 
     }
